@@ -31,10 +31,8 @@ def getTrades():
     while cursor != None:
         trades = req.get(f'https://trades.roblox.com/v1/trades/inbound?cursor={cursor}&limit=50&sortOrder=Desc').json()
         if 'data' in trades:
-            for trade in trades['data']:
-                totalTrades += 1
-                if trade['user']['id'] in declineUsers:
-                    toDecline.append(trade['id'])
+            totalTrades += len(trades['data'])
+            toDecline = [trade['id'] for trade in trades['data'] if trade['user']['id'] in declineUsers]
             cursor = trades['nextPageCursor']
         elif 'TooManyRequests' in str(trades):
             time.sleep(60)
